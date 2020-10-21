@@ -7,7 +7,7 @@ Aquesta pràctica s'ha realitzat sota el context de l'assignatura Tipologia i ci
 
 ## Membres del equip 
 
-La activitat ha sigut realitzada per ----- i Aitor Ferrus Blasco.
+La activitat ha sigut realitzada per Alonso Lopez Vicente i Aitor Ferrus Blasco.
 
 
 ## Fitxers
