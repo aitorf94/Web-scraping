@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 21 21:41:16 2020
-
 @author: aitor
+Version: 23/10/2020
 """
 # Afegim llibreries a utilitzar
 import os
@@ -20,7 +20,7 @@ class AutoSuzukiScraper():
     
         def __init__(self):
             self.url = "https://auto.suzuki.es"
-            #self.subdomain = "/database.htm"
+            self.subdomain = "/precios"
         
         def __robots_analisi_(self,url):
                 rp= robotparser.RobotFileParser()
@@ -32,7 +32,8 @@ class AutoSuzukiScraper():
 
     
         def __descarrega(self, url, num_intents=2):
-            print ('Descarrregant:', url)
+            print (">>>>>------------------------------------------------------------------------------------------")
+            print ('Descarregant:', url)
             # Definim header 
             headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,\
@@ -61,20 +62,63 @@ class AutoSuzukiScraper():
             return html
     
         def scrape(self):
-            print ("Web Scrapping sobre dades dels differents models de cotxe Suzuki:" + self.url ) 
+            print ("-----------------------------------------------------------------------------------------------")
+            print ("Web Scrapping sobre dades dels differents models de cotxe Suzuki:" + self.url + self.subdomain ) 
             print ("Aquest process pot tardar fins X minuts .\n")
             
             # Executem timer 
             start_time = time.time()
-            
+           
             if self.__robots_analisi_(self.url) == True:
             
                 # Descarregem HTML de pagina web
-                html = self.__descarrega(self.url)
+                html = self.__descarrega(self.url+self.subdomain)
                 soup = BeautifulSoup(html, 'html.parser')
-                print ("Extraguent data")
+                #soup = BeautifulSoup(html, 'lxml')
+                print ("Extraient data")
                 # Extraiem enllaços per a cada model
-                #models_enllaços = self.models_enllaços(html)
+                tables = soup.find_all("table")
+                #models = self.models_enllaços(links)
+                #print (">> TABLES 4-----------------")
+                #print(tables)
+                #print("\n")
+
+                avui = datetime.now()
+                v_data = avui.strftime("%d/%m/%Y")
+                v_model = ""
+                v_acabat = ""
+                v_preu = ""
                 
+                print ("---------------------------------")
+                print("DATA; MODEL; ACABAT; PREU")
+                print ("---------------------------------")
+                #inici de la lectura de les taules
+                for table in tables:
+                        if "tableDATA" in table["class"]:
+                                for row in table.find_all("tr"):
+                                       columns = row.find_all("td")
+                                       num_cols = 0
+                                       for column in columns:
+                                                num_cols +=1
+                                                if num_cols == 3:
+                                                        v_preu = (column.contents[0]).strip()
+                                                        #print (column.contents[0])
+                                                        print (v_data+"; "+v_model+"; "+v_acabat+"; "+v_preu)
+                                                        print ("---------------------------------") 
+                                                        break
+                                                if num_cols == 1:
+                                                        v_model = (column.get_text())
+                                                if num_cols == 2:
+                                                        v_acabat = (column.get_text())
+                                                #print (column.get_text())
+
+                                #for tabletd in table.td:
+                                #       print (table.td.get_text())
+                                #print (table.td.get_text())
+                                #print ("------------------")                    
+                                #print("\n")
             else:
                 print("Bloquejat per robots.txt",self.url)
+
+                       
+        
