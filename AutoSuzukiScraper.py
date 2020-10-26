@@ -1,37 +1,85 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 21 21:41:16 2020
-@author: aitor
-Version: 23/10/2020
-"""
-@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 21 21:41:16 2020
-@author: aitor
-Version: 23/10/2020
 @author: aitor,alonso
 Version: 26/10/2020
 """
 # Afegim llibreries a utilitzar
 import os
-@@ -71,27 +71,28 @@ def scrape(self):
+import requests
+import csv
+import argparse
+import urllib
+import time
+from datetime import datetime
+from datetime import timedelta
+from bs4 import BeautifulSoup
+from urllib import robotparser
 
+class AutoSuzukiScraper():
+    
+        def __init__(self):
+            self.url = "https://auto.suzuki.es"
+            self.subdomain = "/precios"
+        
+        def __robots_analisi_(self,url):
+                rp= robotparser.RobotFileParser()
+                rp.set_url(url + '/robots.txt')
+                rp.read()
+                user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/5\
+            37.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+                return rp.can_fetch (user_agent,url)
+
+    
+        def __descarrega(self, url, num_intents=2):
+            print (">>>>>------------------------------------------------------------------------------------------")
+            print ('Descarregant:', url)
+            # Definim header 
+            headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,\
+            */*;q=0.8",
+            "Accept-Encoding": "gzip, deflate, sdch, br",
+            "Accept-Language": "en-US,en;q=0.8",
+            "Cache-Control": "no-cache",
+            "dnt": "1",
+            "Pragma": "no-cache",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/5\
+            37.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+            }
+            #request = urllib.request.Request(url, headers=headers)
+            try:
+                #html = urllib.request.urlopen(request).read()
+                response = urllib.request.urlopen(url)
+                html = response.read()
+            except urllib.URLError as e:
+                print ('Error en la descarrega:', e.reason)
+                html = None
+                if num_intents > 0:
+                    if hasattr(e, 'code') and 500 <= e.code < 600:
+                        # retry 5XX HTTP errors
+                        return self.__descarrega(url, num_intents-1)
+            return html
+    
+        def scrape(self):
+            print ("-----------------------------------------------------------------------------------------------")
+            print ("Web Scrapping sobre dades dels differents models de cotxe Suzuki:" + self.url + self.subdomain ) 
+            print ("Aquest process pot tardar fins X minuts .\n")
+            
+            # Executem timer 
+            start_time = time.time()
+           
             if self.__robots_analisi_(self.url) == True:
-
-                # Descarregem HTML de pagina web
+            
                 # Descarreguem l'HTML de la pàgina web (url+subdomini)
                 html = self.__descarrega(self.url+self.subdomain)
                 soup = BeautifulSoup(html, 'html.parser')
-                #soup = BeautifulSoup(html, 'lxml')
                 print ("Extraient data")
                 # Extraiem enllaços per a cada model
                 tables = soup.find_all("table")
-                #models = self.models_enllaços(links)
                 #print (">> TABLES 4-----------------")
                 #print(tables)
                 #print("\n")
-
                 # Inicialitzem variables
                 avui = datetime.now()
                 v_data = avui.strftime("%d/%m/%Y")
@@ -39,10 +87,6 @@ import os
                 v_model = ""
                 v_acabat = ""
                 v_preu = ""
-
-                print ("---------------------------------")
-                print("DATA; MODEL; ACABAT; PREU")
-                print ("---------------------------------")
                 v_csv = []
                 #print ("---------------------------------")
                 #print("DATA; MODEL; ACABAT; PREU")
@@ -52,7 +96,8 @@ import os
                 #inici de la lectura de les taules
                 for table in tables:
                         if "tableDATA" in table["class"]:
-@@ -100,23 +101,38 @@ def scrape(self):
+                                for row in table.find_all("tr"):
+                                       columns = row.find_all("td")
                                        num_cols = 0
                                        for column in columns:
                                                 num_cols +=1
@@ -60,8 +105,6 @@ import os
                                                 if num_cols == 3:
                                                         v_preu = (column.contents[0]).strip()
                                                         #print (column.contents[0])
-                                                        print (v_data+"; "+v_model+"; "+v_acabat+"; "+v_preu)
-                                                        print ("---------------------------------") 
                                                         #print (v_data+"; "+v_model+"; "+v_acabat+"; "+v_preu)
                                                         #print ("---------------------------------")
                                                         # Afegim el model a la llista amb totes les dades
@@ -75,11 +118,6 @@ import os
                                                         v_acabat = (column.get_text())
                                                 #print (column.get_text())
 
-                                #for tabletd in table.td:
-                                #       print (table.td.get_text())
-                                #print (table.td.get_text())
-                                #print ("------------------")                    
-                                #print("\n")
                 #print (v_csv)
                 # Carreguem les dades en el csv "models_autosuzuki_es_aaaammdd.csv"
                 # Si ja existeix es sobreescriurà. Si no hi ha dades no el tractarem.
@@ -97,4 +135,3 @@ import os
                                 print("          PROBABLEMENTE ESTIGUI OBERT EN UNA ALTRA APLICACIÓ.")
             else:
                 print("Bloquejat per robots.txt",self.url)
-
