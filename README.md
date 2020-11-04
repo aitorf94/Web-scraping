@@ -18,6 +18,16 @@ main.py: Script utilitzat per l'extracció de les dades de la pàgina web https:
 
 AutoSuzukiScraper.py: Conte la implementacio del module AutoSuzukiScraper que s'encarrega de la extraccio de les dades de la pàgina web https://auto.suzuki.es/
 
+## Executio Exemple
+
+El script s'ha d'executar de la següent manera:
+
+```
+python main.py
+```
+
+El resultat serà la creació d'un CSV amb les dades extretes. El nom del CSV serà models_autosuzuki_es_aaaa\mm\dd
+
 ## Recursos
 
 1. Subirats, L., Calvo, M. (2018). Web Scraping. Editorial UOC.
