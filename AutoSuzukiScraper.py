@@ -2,7 +2,7 @@
 """
 Created on Wed Oct 21 21:41:16 2020
 @author: aitor,alonso
-Version: 26/10/2020
+Version: 05/11/2020
 """
 # Afegim llibreries a utilitzar
 import os
@@ -103,7 +103,8 @@ class AutoSuzukiScraper():
                                                 num_cols +=1
                                                 # Càrrega del preu
                                                 if num_cols == 3:
-                                                        v_preu = (column.contents[0]).strip()
+                                                        #Treiem els blancs, i els punts per evitar problemes de decimals segons codificació
+                                                        v_preu = ((column.contents[0]).strip()).replace('.', '')
                                                         #print (column.contents[0])
                                                         #print (v_data+"; "+v_model+"; "+v_acabat+"; "+v_preu)
                                                         #print ("---------------------------------")
@@ -135,3 +136,5 @@ class AutoSuzukiScraper():
                                 print("          PROBABLEMENTE ESTIGUI OBERT EN UNA ALTRA APLICACIÓ.")
             else:
                 print("Bloquejat per robots.txt",self.url)
+
+                       
