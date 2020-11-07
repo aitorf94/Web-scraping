@@ -12,8 +12,6 @@ La activitat ha sigut realitzada per Alonso Lopez Vicente i Aitor Ferrus Blasco.
 
 ## Fitxers
 
-Afegir llista de fitxers utilitzats.
-
 main.py: Script utilitzat per l'extracció de les dades de la pàgina web https://auto.suzuki.es/ mitjançant un procés scrapping, i la creació d'un dataset que contendrà la següent informació. La data de extraccio , els diversos models de cotxes, les diferents versions de cada model i el seu preu.
 
 AutoSuzukiScraper.py: Conte la implementacio del module AutoSuzukiScraper que s'encarrega de la extraccio de les dades de la pàgina web https://auto.suzuki.es/
