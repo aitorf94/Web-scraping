@@ -28,6 +28,10 @@ python main.py
 
 El resultat serà la creació d'un CSV amb les dades extretes. El nom del CSV serà models_autosuzuki_es_aaaa\mm\dd
 
+## DOI
+
+Enllaç per accedir al data set en format CSV a Zenodo: https://doi.org/10.5281/zenodo.4256721 
+
 ## Recursos
 
 1. Subirats, L., Calvo, M. (2018). Web Scraping. Editorial UOC.
